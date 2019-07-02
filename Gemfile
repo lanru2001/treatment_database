@@ -48,6 +48,8 @@ gem 'pdfkit'
 
 gem 'dotenv-rails'
 
+gem 'coveralls'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -69,7 +71,6 @@ group :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15'
   # Easy installation and use of chromedriver to run system tests with Chrome
-  gem 'coveralls'
   gem 'simplecov', require: false
 end
 
