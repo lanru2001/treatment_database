@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :conservation_records do
     resources :in_house_repair_records
     resources :external_repair_records
+    resources :treatment_records
   end
   get 'search', to: 'search#results', as: 'search'
   root 'front#index'

@@ -1,0 +1,19 @@
+// Place all the styles related to the treatment_records controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.treatment_record_field {
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.treatment_record_field div {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.treatment_record_field div textarea {
+  height: 150px;
+}

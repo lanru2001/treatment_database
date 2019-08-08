@@ -1,10 +1,10 @@
-<%= link_to '← Return to List', conservation_records_path %>
+<p><%= link_to '← Return to List', conservation_records_path %></p>
 <div class="header">
   <h1><%= @conservation_record.title %></h1>
   <%= link_to 'Edit Conservation Record', edit_conservation_record_path(@conservation_record) %>
 </div>
 
-<%= link_to 'Download Conservation Worksheet', conservation_worksheet_path(@conservation_record) %>
+<p><%= link_to 'Download Conservation Worksheet', conservation_worksheet_path(@conservation_record) %></p>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
@@ -109,6 +109,11 @@
     
   </div>
 </div>
+
+<br />
+
+<%= render :partial => 'treatment_records/new' %>
+
 <br />
 
 <div class="modal fade" id="inHouseRepairModal" tabindex="-1" role="dialog" aria-labelledby="inHouseRepairModal" aria-hidden="true">

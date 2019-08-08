@@ -2,7 +2,7 @@
 
 class ConservationRecordsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_conservation_record, only: %i[show edit update destroy]
+  before_action :set_conservation_record, :set_treatment_record, only: %i[show edit update destroy]
 
   # GET /conservation_records
   # GET /conservation_records.json
@@ -16,6 +16,7 @@ class ConservationRecordsController < ApplicationController
     @users = User.all
     @repair_types = ControlledVocabulary.where(vocabulary: 'repair_type', active: true)
     @contract_conservators = ControlledVocabulary.where(vocabulary: 'contract_conservator', active: true)
+    @housing_methods = ControlledVocabulary.where(vocabulary: 'housing_method', active: true)
     @in_house_repairs = @conservation_record.in_house_repair_records
     @external_repairs = @conservation_record.external_repair_records
   end
@@ -90,6 +91,15 @@ class ConservationRecordsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_conservation_record
     @conservation_record = ConservationRecord.find(params[:id])
+  end
+
+  # Create a new treatment record or pull information on existing
+  def set_treatment_record
+    if @conservation_record.treatment_record.nil?
+      @treatment_record = TreatmentRecord.new()
+    else
+      @conservation_record.treatment_record
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

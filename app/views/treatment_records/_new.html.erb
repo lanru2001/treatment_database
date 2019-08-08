@@ -1,0 +1,139 @@
+<h3>Treatment Record</h3>
+
+<div class="treatment-record-form">
+  <%= form_with(model: [@conservation_record, @conservation_record.treatment_record]) do |form| %>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="condition-tab" data-toggle="tab" href="#condition" role="tab" aria-controls="condition" aria-selected="false">Condition</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="proposal-tab" data-toggle="tab" href="#proposal" role="tab" aria-controls="proposal" aria-selected="false">Treatment Proposal</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+        <div class="treatment_record_field">
+          <div>General Remarks</div>
+          <div><%= form.text_area :description_general_remarks, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Binding</div>
+          <div><%= form.text_area :description_binding, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Textblock</div>
+          <div><%= form.text_area :description_textblock, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Primary Support</div>
+          <div><%= form.text_area :description_primary_support, class: 'editor-container form-control' %></div>
+        </div>
+        
+        <div class="treatment_record_field">
+          <div>Medium</div>
+          <div><%= form.text_area :description_medium, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Attachments | Inserts</div>
+          <div><%= form.text_area :description_attachments_inserts, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Housing</div>
+          <div><%= form.text_area :description_housing, class: 'editor-container form-control' %></div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="condition" role="tabpanel" aria-labelledby="condition-tab">
+        <div class="treatment_record_field">
+          <div>Summary</div>
+          <div><%= form.text_area :condition_summary, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Binding</div>
+          <div><%= form.text_area :condition_binding, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Textblock</div>
+          <div><%= form.text_area :condition_textblock, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Primary Support</div>
+          <div><%= form.text_area :condition_medium, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Housing</div>
+          <div><%= form.select(:condition_housing, options_from_collection_for_select(@housing_methods, "id", "key"), { prompt: 'Select Hosuing Method' }, { :class => 'form-control' }) %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Housing Narritive</div>
+          <div><%= form.text_area :condition_housing_naritive, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Attachments | Inserts</div>
+          <div><%= form.text_area :condition_attachments_inserts, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Previous Treatment</div>
+          <div><%= form.text_area :condition_previous_treatment, class: 'editor-container form-control' %></div>
+        </div>
+
+        <div class="treatment_record_field">
+          <div>Materials Analysis</div>
+          <div><%= form.text_area :condition_materials_analysis, class: 'editor-container form-control' %></div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="proposal" role="tabpanel" aria-labelledby="proposal-tab">
+        <div class="treatment_record_field">
+          <div>Proposal</div>
+          <div><%= form.text_area :treatment_proposal_proposal, class: 'editor-container form-control' %></div>
+        </div>
+        <div class="treatment_record_field">
+          <div>Housing Need</div>
+          <div><%= form.select(:treatment_proposal_housing_need, options_from_collection_for_select(@housing_methods, "id", "key"), { prompt: 'Select Hosuing Method' }, { :class => 'form-control' }) %></div>
+        </div>
+        <div class="treatment_record_field">
+          <div>Factors Influencing Treatment</div>
+          <div><%= form.text_area :treatment_proposal_factors_influencing_treatment, class: 'editor-container form-control' %></div>
+        </div>
+        <div class="treatment_record_field">
+          <div>Performed Treatment</div>
+          <div><%= form.text_area :treatment_proposal_performed_treatment, class: 'editor-container form-control' %></div>
+        </div>
+        <div class="treatment_record_field">
+          <div>Housing Provided</div>
+          <div><%= form.select(:treatment_proposal_housing_provided, options_from_collection_for_select(@housing_methods, "id", "key"), { prompt: 'Select Hosuing Method' }, { :class => 'form-control' }) %></div>
+        </div>
+        <div class="treatment_record_field">
+          <div>Housing Narrative</div>
+          <div><%= form.text_area :treatment_proposal_housing_narrative, class: 'editor-container form-control' %></div>
+        </div>
+        <div class="treatment_record_field">
+          <div>Storage and Handling Notes</div>
+          <div><%= form.text_area :treatment_proposal_storage_and_handling_notes, class: 'editor-container form-control' %></div>
+        </div>
+        <div class="treatment_record_field">
+          <div>Total Treatment Time (in minutes)</div>
+          <div><%= form.number_field :treatment_proposal_total_treatment_time, class: 'form-control' %></div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <%= form.submit "Save Changes", class: 'btn btn-primary' %>
+  <% end %>
+</div>
