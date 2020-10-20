@@ -22,6 +22,7 @@ class ConservationRecordsController < ApplicationController
     @housing = ControlledVocabulary.where(vocabulary: 'housing', active: true)
     @in_house_repairs = @conservation_record.in_house_repair_records
     @external_repairs = @conservation_record.external_repair_records
+    @conservators_technicians = @conservation_record.conservators_technicians_records
   end
 
   # GET /conservation_records/new
