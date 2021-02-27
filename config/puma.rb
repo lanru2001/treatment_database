@@ -22,6 +22,15 @@ if ENV.fetch('RAILS_ENV') == 'production'
   directory app_dir.to_s
   # Set up socket location
   # bind "unix://#{app_dir}/tmp/puma/puma.sock"
+
+  # # Set the working directory
+  # directory '/var/app/current'
+  # threads 8, 32
+  # workers %x(grep -c processor /proc/cpuinfo)
+  #
+  # # Set up socket location
+  # bind 'unix:///var/run/puma/treatment-database.sock'
+  # stdout_redirect '/var/log/puma/puma.log', '/var/log/puma/puma.log', true
 end
 
 # Logs
