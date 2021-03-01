@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-configmap
+    {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+    app.kubernetes.io/component: configmap
+    {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+
+data:
+  myvalue: "Hello World"
+  drink: "Hello World"

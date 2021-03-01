@@ -1,0 +1,97 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-ingress
+    {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+    app.kubernetes.io/component: ingress
+    {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+{{/*  annotations:*/}}
+{{/*    nginx.ingress.kubernetes.io/configuration-snippet: |*/}}
+{{/*      more_set_headers "Request-Id: $req_id";*/}}
+{{/*      proxy_set_header  X-Real-IP  $remote_addr;    */}}
+{{/*      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;         */}}
+{{/*      proxy_set_header Host $http_host;    */}}
+{{/*      proxy_redirect off;*/}}
+spec:
+  rules:
+  - host: test.a8cf3398-97ea-4caa-becb-72dc7fe2c4be.nodes.k8s.fr-par.scw.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-service
+            port:
+              number: 80
+  {{- end }}
+{{/*apiVersion: networking.k8s.io/v1*/}}
+{{/*kind: Ingress*/}}
+{{/*metadata:*/}}
+{{/*  name: {{ .Release.Name }}-ingress*/}}
+{{/*  labels:*/}}
+{{/*    app.kubernetes.io/name: {{ .Release.Name }}-ingress*/}}
+{{/*    */}}{{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
+{{/*    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}*/}}
+{{/*    */}}{{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
+{{/*    app.kubernetes.io/managed-by: {{ .Release.Service }}*/}}
+{{/*    */}}{{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
+{{/*    app.kubernetes.io/instance: {{ .Release.Name }}*/}}
+{{/*    */}}{{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
+{{/*    app.kubernetes.io/version: {{ .Chart.AppVersion }}*/}}
+{{/*    */}}{{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+{{/*    app.kubernetes.io/component: ingress*/}}
+{{/*    */}}{{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
+{{/*    app.kubernetes.io/part-of: {{ .Release.Name }}*/}}
+{{/*  annotations:*/}}
+{{/*    nginx.ingress.kubernetes.io/enable-rewrite-log: "true"*/}}
+{{/*    nginx.ingress.kubernetes.io/rewrite-target: /$2*/}}
+{{/*    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"*/}}
+{{/*    nginx.ingress.kubernetes.io/use-regex: "true"*/}}
+{{/*spec:*/}}
+{{/*  rules:*/}}
+{{/*  - host: test.a8cf3398-97ea-4caa-becb-72dc7fe2c4be.nodes.k8s.fr-par.scw.cloud*/}}
+{{/*    http:*/}}
+{{/*      paths:*/}}
+{{/*      - path: /(assets|images|javascripts|stylesheets|swfs|system)/(.+)*/}}
+{{/*        backend:*/}}
+{{/*          service:*/}}
+{{/*            name: {{ .Release.Name }}-service*/}}
+{{/*            port:*/}}
+{{/*              number: 80*/}}
+{{/*      - path: /*/}}
+{{/*        pathType: Prefix*/}}
+{{/*        backend:*/}}
+{{/*          service:*/}}
+{{/*            name: {{ .Release.Name }}-service*/}}
+{{/*            port:*/}}
+{{/*              number: 80*/}}
+{{/*---*/}}
+
+{{/*apiVersion: networking.k8s.io/v1beta1*/}}
+{{/*kind: Ingress*/}}
+{{/*metadata:*/}}
+{{/*  name: test-ingress-2*/}}
+{{/*  annotations:*/}}
+{{/*    nginx.ingress.kubernetes.io/rewrite-target: /$1*/}}
+{{/*spec:*/}}
+{{/*  rules:*/}}
+{{/*    - host: test.com*/}}
+{{/*      http:*/}}
+{{/*        paths:*/}}
+{{/*          - path: /(assets|images|javascripts|stylesheets|swfs|system)/(.+)*/}}
+{{/*            backend:*/}}
+{{/*              serviceName: service3*/}}
+{{/*              servicePort: 80*/}}

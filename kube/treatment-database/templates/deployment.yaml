@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: treatment-database-deployment
+    {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+    app.kubernetes.io/component: app
+    {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{/*{{ template "treatment-database.labels" . }}*/}}
+      {{/*{{ include "treatment-database.labels" . | indent 2 }}*/}}
+      app.kubernetes.io/name: {{ .Release.Name }}-app
+      {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
+      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+      {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
+      app.kubernetes.io/version: {{ .Chart.AppVersion }}
+      {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+      app.kubernetes.io/component: app
+      {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
+      app.kubernetes.io/part-of: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}-app
+        {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+        {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+        app.kubernetes.io/component: app
+        {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
+        app.kubernetes.io/part-of: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: treatment-database-app
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+        env:
+        - name: RAILS_LOG_TO_STDOUT
+          value: 'true'
+        - name: RAILS_ENV
+          value: production
+        - name: TREATMENT_DATABASE_ADAPTER
+          value: mysql2
+        - name: TREATMENT_DATABASE_HOST
+          value: {{ .Values.databaseProperties.dbHost }}
+        - name: TREATMENT_DATABASE_NAME
+          value: {{ .Values.databaseProperties.dbName }}
+        - name: TREATMENT_DATABASE_POOL
+          value: "{{ .Values.databaseProperties.dbPool }}"
+        - name: TREATMENT_DATABASE_PORT
+          value: "{{ .Values.databaseProperties.dbPort }}"
+        - name: TREATMENT_DATABASE_TIMEOUT
+          value: "{{ .Values.databaseProperties.dbTimeout }}"
+        envFrom:
+        - secretRef:
+            name: {{ .Release.Name }}-rds-secret
+        - secretRef:
+            name: {{ .Release.Name }}-rails-secret
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets.secretName }}
