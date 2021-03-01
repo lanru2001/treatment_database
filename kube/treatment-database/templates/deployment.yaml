@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
-    app.kubernetes.io/name: treatment-database-deployment
+    app.kubernetes.io/name: {{ .Release.Name }}-deployment
     {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
@@ -59,24 +59,28 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 3000
-        env:
-        - name: RAILS_LOG_TO_STDOUT
-          value: 'true'
-        - name: RAILS_ENV
-          value: production
-        - name: TREATMENT_DATABASE_ADAPTER
-          value: mysql2
-        - name: TREATMENT_DATABASE_HOST
-          value: {{ .Values.databaseProperties.dbHost }}
-        - name: TREATMENT_DATABASE_NAME
-          value: {{ .Values.databaseProperties.dbName }}
-        - name: TREATMENT_DATABASE_POOL
-          value: "{{ .Values.databaseProperties.dbPool }}"
-        - name: TREATMENT_DATABASE_PORT
-          value: "{{ .Values.databaseProperties.dbPort }}"
-        - name: TREATMENT_DATABASE_TIMEOUT
-          value: "{{ .Values.databaseProperties.dbTimeout }}"
         envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-configmap
+        - secretRef:
+            name: {{ .Release.Name }}-rds-secret
+        - secretRef:
+            name: {{ .Release.Name }}-rails-secret
+        readinessProbe:
+          httpGet:
+            path: /robots.txt
+            port: 3000
+            scheme: HTTP
+      initContainers:
+      - name: treatment-database-abort-if-pending-migration
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - rake
+        - db:abort_if_pending_migrations
+        envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-configmap
         - secretRef:
             name: {{ .Release.Name }}-rds-secret
         - secretRef:

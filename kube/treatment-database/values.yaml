@@ -45,7 +45,7 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
      kubernetes.io/ingress.class: nginx
 #     kubernetes.io/tls-acme: "true"
@@ -54,8 +54,7 @@ ingress:
       paths: []
 #  tls:
 #    - secretName: chart-example-tls
-#      hosts:
-#        - test.a8cf3398-97ea-4caa-becb-72dc7fe2c4be.nodes.k8s.fr-par.scw.cloud
+#      hosts: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -69,17 +68,14 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
 # Custom Namespace, this namespace must exist in the cluster, the helm chart will not create a namespace
 namespace: default
 
 # Master Key for the Rails Application
 railsMasterKey:
+
+# Run `rails db:migrate` before deploying the pods
+railsMigrateDatabase: false
 
 # Database related properties
 databaseProperties:

@@ -19,5 +19,11 @@ metadata:
     app.kubernetes.io/part-of: {{ .Release.Name }}
 
 data:
-  myvalue: "Hello World"
-  drink: "Hello World"
+  RAILS_LOG_TO_STDOUT: 'true'
+  RAILS_ENV: production
+  TREATMENT_DATABASE_ADAPTER: mysql2
+  TREATMENT_DATABASE_HOST: {{ .Values.databaseProperties.dbHost }}
+  TREATMENT_DATABASE_NAME: {{ .Values.databaseProperties.dbName }}
+  TREATMENT_DATABASE_POOL: "{{ .Values.databaseProperties.dbPool }}"
+  TREATMENT_DATABASE_PORT: "{{ .Values.databaseProperties.dbPort }}"
+  TREATMENT_DATABASE_TIMEOUT: "{{ .Values.databaseProperties.dbTimeout }}"
