@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: treatment-database-rds-migration
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: treatment-database-rds-migration
     {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
@@ -20,7 +21,7 @@ metadata:
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release/
-    "helm.sh/hook": pre-install,pre-upgrade,pre-rollback
+    "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
@@ -79,9 +80,10 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: treatment-database-rds-migration
+  name: treatment-database-rds-rollback
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: treatment-database-rds-migration
+    app.kubernetes.io/name: treatment-database-rds-rollback
     {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
@@ -103,9 +105,9 @@ metadata:
 spec:
   template:
     metadata:
-      name: treatment-database-rds-migration
+      name: treatment-database-rds-rollback
       labels:
-        app.kubernetes.io/name: treatment-database-rds-migration
+        app.kubernetes.io/name: treatment-database-rds-rollback
         {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
         helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
@@ -121,7 +123,7 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-        - name: treatment-database-rds-migration
+        - name: treatment-database-rds-rollback
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:

@@ -68,9 +68,6 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-# Custom Namespace, this namespace must exist in the cluster, the helm chart will not create a namespace
-namespace: default
-
 # Master Key for the Rails Application
 railsMasterKey:
 
