@@ -95,7 +95,15 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Needed for mail to work in production
-  config.action_mailer.smtp_settings = { enable_starttls_auto: false }
+  config.action_mailer.smtp_settings = {
+    enable_starttls_auto: true,
+    address: ENV['TREATMENT_DATABASE_SMTP_HOST'],
+    tls: true,
+    port: ENV['TREATMENT_DATABASE_SMTP_PORT'],
+    domain: 'example.com',
+    user_name: ENV['TREATMENT_DATABASE_SMTP_USERNAME'],
+    password: ENV['TREATMENT_DATABASE_SMTP_PASSWORD']
+  }
 
   # Change the Uglifier parsing engine
   config.assets.js_compressor = Uglifier.new(harmony: true)
