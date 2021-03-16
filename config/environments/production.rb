@@ -101,7 +101,6 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     enable_starttls_auto: true,
     address: ENV['TREATMENT_DATABASE_SMTP_HOST'],
-    tls: true,
     port: ENV['TREATMENT_DATABASE_SMTP_PORT'],
     user_name: ENV['TREATMENT_DATABASE_SMTP_USERNAME'],
     password: ENV['TREATMENT_DATABASE_SMTP_PASSWORD'],
