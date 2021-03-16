@@ -94,7 +94,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.action_mailer.default_url_options = Rails.application.default_url_options
+  # config.action_mailer.default_url_options = Rails.application.default_url_options
+  config.action_mailer.default_url_options = { host: 'http://treatmentdatabase-env.eba-sduaazdh.us-east-2.elasticbeanstalk.com', protocol: 'http' }
 
   # Needed for mail to work in production
   config.action_mailer.smtp_settings = {
