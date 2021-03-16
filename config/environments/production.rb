@@ -94,15 +94,17 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  config.action_mailer.default_url_options = Rails.application.default_url_options
+
   # Needed for mail to work in production
   config.action_mailer.smtp_settings = {
     enable_starttls_auto: true,
     address: ENV['TREATMENT_DATABASE_SMTP_HOST'],
     tls: true,
     port: ENV['TREATMENT_DATABASE_SMTP_PORT'],
-    domain: 'example.com',
     user_name: ENV['TREATMENT_DATABASE_SMTP_USERNAME'],
-    password: ENV['TREATMENT_DATABASE_SMTP_PASSWORD']
+    password: ENV['TREATMENT_DATABASE_SMTP_PASSWORD'],
+    authentication: :login
   }
 
   # Change the Uglifier parsing engine
