@@ -1,22 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-service
+  name: {{ include "treatment-database.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}-service
-    {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+  {{- include "treatment-database.labels" . | nindent 4 }}
     app.kubernetes.io/component: service
-    {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
-    app.kubernetes.io/part-of: {{ .Release.Name }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -24,16 +13,5 @@ spec:
     name: http
     targetPort: 3000
   selector:
-    app.kubernetes.io/name: {{ .Release.Name }}-app
-    {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
+  {{- include "treatment-database.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: app
-    {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
-    app.kubernetes.io/part-of: {{ .Release.Name }}

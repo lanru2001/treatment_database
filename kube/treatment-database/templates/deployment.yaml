@@ -1,60 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployment
+  name: {{ include "treatment-database.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}-deployment
-    {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
-    app.kubernetes.io/component: app
-    {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
-    app.kubernetes.io/part-of: {{ .Release.Name }}
+    {{- include "treatment-database.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{/*{{ template "treatment-database.labels" . }}*/}}
-      {{/*{{ include "treatment-database.labels" . | indent 2 }}*/}}
-      app.kubernetes.io/name: {{ .Release.Name }}-app
-      {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
-      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
-      app.kubernetes.io/managed-by: {{ .Release.Service }}
-      {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
-      app.kubernetes.io/version: {{ .Chart.AppVersion }}
-      {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
-      app.kubernetes.io/component: app
-      {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
-      app.kubernetes.io/part-of: {{ .Release.Name }}
+    {{- include "treatment-database.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app.kubernetes.io/name: {{ .Release.Name }}-app
-        {{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
-        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        {{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
-        {{/* REC: This should be the {{ .Release.Name }}. It aids in differentiating between different instances of the same application.*/}}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        {{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
-        app.kubernetes.io/version: {{ .Chart.AppVersion }}
-        {{/* OPT: This is a common label for marking the different roles that pieces may play in an application. For example, app.kubernetes.io/component: frontend. */}}
-        app.kubernetes.io/component: app
-        {{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
-        app.kubernetes.io/part-of: {{ .Release.Name }}
+    {{- include "treatment-database.selectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "treatment-database.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-      - name: treatment-database-app
+      - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
@@ -71,6 +43,14 @@ spec:
             path: /robots.txt
             port: 3000
             scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /robots.txt
+            port: 3000
+            scheme: HTTP
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+
       initContainers:
       - name: treatment-database-abort-if-pending-migration
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -85,5 +65,16 @@ spec:
             name: {{ .Release.Name }}-rds-secret
         - secretRef:
             name: {{ .Release.Name }}-rails-secret
-      imagePullSecrets:
-      - name: {{ .Values.imagePullSecrets.secretName }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

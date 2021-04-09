@@ -34,14 +34,16 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "treatment-database.labels" -}}
+{{/* REC: This should be the chart name and version: {{ .Chart.Name }}-{{ .Chart.Version \| replace "+" "_" }}.*/}}
 helm.sh/chart: {{ include "treatment-database.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/version: {{ .Chart.AppVersion }}
+{{/* OPT: When multiple charts or pieces of software are used together to make one application. For example, application software and a database to produce a website. This can be set to the top level application being supported*/}}
 app.kubernetes.io/part-of: {{ .Release.Name }}
 {{ include "treatment-database.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
+{{/* OPT: The version of the app and can be set to {{ .Chart.AppVersion }}.*/}}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
+{{/* REC: This should always be set to {{ .Release.Service }}. It is for finding all things managed by Helm. */}}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 

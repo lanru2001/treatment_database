@@ -27,3 +27,8 @@ data:
   TREATMENT_DATABASE_POOL: "{{ .Values.databaseProperties.dbPool }}"
   TREATMENT_DATABASE_PORT: "{{ .Values.databaseProperties.dbPort }}"
   TREATMENT_DATABASE_TIMEOUT: "{{ .Values.databaseProperties.dbTimeout }}"
+  {{- if .Values.awsXRay.enabled -}}
+  AWS_XRAY_DAEMON_ADDRESS: {{ .Values.awsXRay.daemonAddress }}
+  AWS_XRAY_TRACING_NAME: {{ .Values.awsXRay.tracingName }}
+  AWS_XRAY_CONTEXT_MISSING: "LOG_ERROR"
+  {{- end }}
